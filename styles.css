@@ -1,0 +1,332 @@
+/* styles.css
+   ----------------------------------------------------------------------------
+   Styling for the Scion chatbot: a fixed left sidebar plus a flexible chat pane.
+   Kept simple and readable — a small palette, a few component classes, and a
+   print section at the bottom so "Save as PDF" prints only the conversation.
+   ---------------------------------------------------------------------------- */
+
+/* ---- Theme variables (one place to tweak colours/spacing) ---- */
+:root {
+  --bg: #f5f6f8;
+  --sidebar-bg: #1f2a37;
+  --sidebar-text: #e5e9f0;
+  --panel-border: #33404f;
+  --accent: #3b7d57; /* "new growth" green, nodding to Scion's name */
+  --accent-dark: #2f6346;
+  --user-bubble: #dceafe;
+  --assistant-bubble: #ffffff;
+  --danger: #b3402f;
+  --text: #1a2330;
+  --muted: #8a97a6;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+}
+
+/* ---- Overall two-column layout ---- */
+.layout {
+  display: flex;
+  height: 100vh;
+}
+
+/* ============================ SIDEBAR ============================ */
+.sidebar {
+  width: 320px;
+  flex-shrink: 0;
+  background: var(--sidebar-bg);
+  color: var(--sidebar-text);
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.sidebar-header h1 {
+  margin: 0;
+  font-size: 28px;
+  letter-spacing: 0.5px;
+}
+
+.tagline {
+  margin: 2px 0 16px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.panel {
+  border-top: 1px solid var(--panel-border);
+  padding: 14px 0;
+}
+
+.panel h2 {
+  margin: 0 0 10px;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+}
+
+.sidebar label {
+  display: block;
+  margin: 10px 0 4px;
+  font-size: 13px;
+}
+
+.sidebar select,
+.sidebar input[type="text"],
+.sidebar input[type="password"] {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid var(--panel-border);
+  border-radius: 6px;
+  background: #2a3744;
+  color: var(--sidebar-text);
+  font-size: 14px;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.checkbox input {
+  width: auto;
+}
+
+.note {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.subpanel {
+  margin: 8px 0;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 6px;
+}
+
+.subpanel input[type="file"] {
+  width: 100%;
+  font-size: 12px;
+  color: var(--sidebar-text);
+}
+
+.doc-list {
+  margin-top: 8px;
+}
+
+.doc-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  padding: 4px 0;
+}
+
+.doc-row button {
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 13px;
+}
+
+/* Buttons */
+.btn {
+  display: block;
+  width: 100%;
+  margin: 6px 0;
+  padding: 9px;
+  border: none;
+  border-radius: 6px;
+  background: #2a3744;
+  color: var(--sidebar-text);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: #34434f;
+}
+
+.btn-danger {
+  background: var(--danger);
+  color: #fff;
+}
+
+.btn-danger:hover {
+  background: #9a3526;
+}
+
+.disclaimer {
+  margin-top: 16px;
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+/* ============================ CHAT PANE ============================ */
+.chat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0; /* lets long content wrap instead of stretching the layout */
+}
+
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.message {
+  max-width: 760px;
+}
+
+.message-assistant {
+  align-self: flex-start;
+}
+
+.message-user {
+  align-self: flex-end;
+}
+
+.message-label {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.message-user .message-label {
+  text-align: right;
+}
+
+.message-content {
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: var(--assistant-bubble);
+  border: 1px solid #e2e6ea;
+  line-height: 1.55;
+  white-space: normal;
+  overflow-wrap: anywhere; /* prevent long tokens/URLs from overflowing */
+}
+
+.message-user .message-content {
+  background: var(--user-bubble);
+  border-color: #c4dbf5;
+}
+
+/* Tidy up Markdown elements inside bubbles */
+.message-content p:first-child {
+  margin-top: 0;
+}
+.message-content p:last-child {
+  margin-bottom: 0;
+}
+.message-content pre {
+  background: #f0f2f4;
+  padding: 10px;
+  border-radius: 6px;
+  overflow-x: auto;
+}
+.message-content code {
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 13px;
+}
+
+/* Status line */
+.status {
+  padding: 6px 24px;
+  font-size: 13px;
+  min-height: 20px;
+}
+.status-info {
+  color: var(--muted);
+}
+.status-error {
+  color: var(--danger);
+  white-space: pre-wrap;
+}
+
+/* Composer (input area) */
+.composer {
+  display: flex;
+  gap: 10px;
+  padding: 16px 24px 24px;
+  border-top: 1px solid #e2e6ea;
+  background: #fff;
+}
+
+.chat-input {
+  flex: 1;
+  resize: vertical;
+  padding: 12px;
+  border: 1px solid #cfd6dd;
+  border-radius: 8px;
+  font-size: 15px;
+  font-family: inherit;
+}
+
+.btn-send {
+  width: auto;
+  align-self: flex-end;
+  padding: 12px 22px;
+  background: var(--accent);
+  color: #fff;
+  margin: 0;
+}
+
+.btn-send:hover {
+  background: var(--accent-dark);
+}
+
+.btn-send:disabled {
+  background: var(--muted);
+  cursor: not-allowed;
+}
+
+/* ============================ PRINT (Save as PDF) ============================
+   When printing, hide everything except the conversation so the exported PDF is
+   a clean transcript. */
+@media print {
+  .sidebar,
+  .composer,
+  .status {
+    display: none !important;
+  }
+
+  .layout,
+  .chat,
+  .messages {
+    display: block;
+    height: auto;
+    overflow: visible;
+  }
+
+  .message {
+    max-width: 100%;
+    page-break-inside: avoid;
+  }
+
+  .message-content {
+    border: none;
+    padding: 4px 0;
+  }
+}
