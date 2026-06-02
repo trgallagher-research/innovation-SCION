@@ -109,21 +109,52 @@ function syncSidebarToSettings() {
 }
 
 /**
- * Render the step stepper: one pill per step, with the current one highlighted
- * and earlier ones marked as done. Also updates the caption and enables/disables
- * the Back/Next buttons at the ends of the sequence.
+ * Render the step funnel: each step as a shape (rose square or blue circle, per
+ * config) joined by connectors, echoing the Innovation Process diagram. The
+ * current step is ringed, completed steps are full colour, and upcoming steps
+ * are dimmed. Also updates the caption and enables/disables the Back/Next
+ * buttons at the ends of the sequence.
  */
 function renderStepper() {
   const current = state.state.currentPhase;
 
   el.phaseStepper.innerHTML = "";
   PHASES.forEach((phase, index) => {
-    const pill = document.createElement("span");
-    pill.className = "step-pill";
-    if (index === current) pill.classList.add("step-current");
-    if (index < current) pill.classList.add("step-done");
-    pill.textContent = phase.short;
-    el.phaseStepper.appendChild(pill);
+    // Connector between the previous shape and this one. Where the shape type
+    // changes (square→circle or circle→square) we use a converging chevron, as
+    // in the diagram; within a same-shape group we use a small dot.
+    if (index > 0) {
+      const prev = PHASES[index - 1];
+      const connector = document.createElement("span");
+      connector.className = "funnel-arrow";
+      if (prev.shape !== phase.shape) {
+        // Chevron points the way the funnel flows into the next group.
+        connector.textContent = phase.shape === "circle" ? "❯" : "❮";
+        connector.classList.add("funnel-arrow-converge");
+      } else {
+        connector.textContent = "·";
+      }
+      el.phaseStepper.appendChild(connector);
+    }
+
+    // The step itself: a numbered shape with a label beneath.
+    const step = document.createElement("div");
+    step.className = "funnel-step";
+    if (index === current) step.classList.add("is-current");
+    if (index < current) step.classList.add("is-done");
+
+    const num = document.createElement("span");
+    num.className = "funnel-num";
+    // Show a two-digit numeral (01, 02 …) like the design's numbered lists.
+    num.textContent = String(index + 1).padStart(2, "0");
+
+    const shape = document.createElement("span");
+    shape.className = `funnel-shape shape-${phase.shape}`;
+    shape.textContent = phase.label;
+
+    step.appendChild(num);
+    step.appendChild(shape);
+    el.phaseStepper.appendChild(step);
   });
 
   // Caption describing the current step.

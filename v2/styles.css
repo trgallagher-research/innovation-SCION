@@ -59,7 +59,7 @@ body {
 .tagline,
 .panel h2,
 .message-label,
-.step-pill,
+.funnel-num,
 .step-eyebrow {
   font-family: var(--font-mono);
   text-transform: uppercase;
@@ -272,35 +272,99 @@ body {
   background: var(--bg);
 }
 
+/* ---- Step funnel: the five steps as the Innovation Process diagram ---- */
 .step-stepper {
   display: flex;
+  align-items: center;
+  gap: 6px;
   flex-wrap: wrap;
-  gap: 8px;
 }
 
-/* One pill per step. Default = upcoming; .step-done = completed (rose, echoing
-   the funnel's early stages); .step-current = where we are now (cobalt). */
-.step-pill {
-  padding: 5px 12px;
-  border-radius: 999px;
+/* One step = a labelled shape with a small numeral floating above it. The
+   numeral is positioned absolutely so it doesn't shift the shape off the row's
+   centre line (keeps the connectors aligned with the shape centres). */
+.funnel-step {
+  position: relative;
+  display: flex;
+  align-items: center;
+  opacity: 0.4; /* upcoming steps are dimmed */
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.funnel-step.is-done {
+  opacity: 1;
+}
+
+.funnel-step.is-current {
+  opacity: 1;
+}
+
+.funnel-num {
+  position: absolute;
+  top: -15px;
+  left: 0;
+  right: 0;
+  text-align: center;
   font-size: 10px;
-  border: 1px solid var(--line);
   color: var(--muted);
-  background: #f1f2f4;
-  white-space: nowrap;
 }
 
-.step-pill.step-done {
-  color: var(--pink-text);
-  border-color: var(--pink-border);
+.funnel-step.is-current .funnel-num {
+  color: var(--accent);
+}
+
+/* The shape itself: a rounded "square" card or a "circle" node, sized to hold a
+   short label. Colour is fixed by type (rose vs cobalt), echoing the diagram. */
+.funnel-shape {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 78px;
+  height: 78px;
+  padding: 6px;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  line-height: 1.15;
+}
+
+.shape-square {
+  border-radius: 16px;
   background: var(--pink);
+  color: #6e3f3f;
+  border: 1px solid var(--pink-border);
 }
 
-.step-pill.step-current {
-  color: #ffffff;
-  border-color: var(--accent);
+.shape-circle {
+  border-radius: 50%;
   background: var(--accent);
-  font-weight: 500;
+  color: #ffffff;
+  border: 1px solid var(--accent);
+}
+
+/* The current step is ringed and lifted slightly so it reads as "you are here". */
+.funnel-step.is-current .funnel-shape {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.funnel-step.is-current {
+  transform: translateY(-1px);
+}
+
+/* Connectors between shapes: a small dot within a group, a converging chevron
+   where the funnel changes shape (rose group ⇄ cobalt group). */
+.funnel-arrow {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.funnel-arrow-converge {
+  color: var(--ink);
+  font-size: 18px;
 }
 
 .step-controls {

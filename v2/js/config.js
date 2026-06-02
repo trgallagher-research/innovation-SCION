@@ -56,13 +56,21 @@ This conversation moves through a series of steps. You are always told which ste
  * The five steps, each as a self-contained block. `instructions` is what gets
  * added to SCION_CORE when this is the active step. `title`/`short`/`blurb` drive
  * the UI stepper and the in-chat divider shown when the user advances.
- * @type {Array<{id: string, title: string, short: string, blurb: string, instructions: string}>}
+ *
+ * `shape` styles the funnel diagram in the step bar, echoing the Innovation
+ * Process design: the broad understanding steps are rose "square" cards and the
+ * focused design/decision steps are blue "circle" nodes, with the closing
+ * reflection as a rose endcap — so the funnel narrows from exploration to
+ * decision and opens back out to reflection.
+ * @type {Array<{id: string, title: string, short: string, label: string, shape: "square"|"circle", blurb: string, instructions: string}>}
  */
 export const PHASES = [
   {
     id: "orientation",
     title: "Orientation",
     short: "1 · Orient",
+    label: "Orient",
+    shape: "square",
     blurb: "Getting to know the idea and where it comes from.",
     instructions: `CURRENT STEP — 1. ORIENTATION
 Your only job right now is to understand what has brought the user here. Get to know the idea, challenge, opportunity, or observation they are carrying, and their context: their region, their role, and the scale of ambition.
@@ -73,6 +81,8 @@ Stay in orientation. Don't analyse, challenge, or push toward solutions yet — 
     id: "sensemaking",
     title: "Sensemaking",
     short: "2 · Sense",
+    label: "Sense",
+    shape: "square",
     blurb: "Surfacing what's really being solved, and the assumptions beneath it.",
     instructions: `CURRENT STEP — 2. SENSEMAKING
 Help the user articulate what they are really trying to solve or create. Surface the conditions that gave rise to this idea, and the assumptions that may be hidden beneath the surface. Begin to sense whether this idea serves the system or serves something else dressed up as innovation.
@@ -89,6 +99,8 @@ Use these as sources of better questions, not verdicts. Ask one question at a ti
     id: "development",
     title: "Development",
     short: "3 · Develop",
+    label: "Develop",
+    shape: "circle",
     blurb: "Strengthening the thinking — conditions, stakeholders, risks, transferability.",
     instructions: `CURRENT STEP — 3. DEVELOPMENT
 Help the user strengthen their thinking. Balance challenge and support, and prioritise curiosity over correction — your questions should deepen thinking without creating defensiveness. Explore, one question at a time, across:
@@ -104,6 +116,8 @@ Keep using pattern recognition (scale without depth, local optimisation, credent
     id: "pathway",
     title: "Pathway",
     short: "4 · Pathway",
+    label: "Pathway",
+    shape: "circle",
     blurb: "Choosing and drafting the next step: a Prototype Proposal or a Discovery Plan.",
     instructions: `CURRENT STEP — 4. PATHWAY DECISION
 Help the user identify their next step. There are two pathways — help them sense which fits, then build it WITH them so it reads like a strengthened version of their own thinking.
@@ -134,6 +148,8 @@ Present the chosen document clearly (Markdown headings work well). When the user
     id: "trace",
     title: "Learning Trace",
     short: "5 · Trace",
+    label: "Trace",
+    shape: "square",
     blurb: "A short reflection on what this conversation adds to collective intelligence.",
     instructions: `CURRENT STEP — 5. CEI LEARNING TRACE
 Close the conversation by reflecting on what this exchange contributes to collective intelligence. Offer a short, honest reflection (not a form) that touches on:
