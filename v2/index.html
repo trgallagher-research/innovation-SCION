@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scion v2 — CEI Prototype Design Agent</title>
+
+    <!-- App styles -->
+    <link rel="stylesheet" href="styles.css" />
+
+    <!--
+      External libraries loaded from CDN (no build step):
+        - marked: converts the model's Markdown into HTML
+        - DOMPurify: sanitises that HTML before we insert it (XSS safety)
+      Both attach themselves to the global window object.
+    -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
+  </head>
+
+  <body>
+    <div class="layout">
+      <!-- ============================ SIDEBAR ============================ -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <h1>Scion</h1>
+          <p class="tagline">CEI Prototype Design Agent · v2</p>
+        </div>
+
+        <!-- Connection settings -->
+        <section class="panel">
+          <h2>Connection</h2>
+
+          <label for="provider-select">Provider</label>
+          <select id="provider-select">
+            <option value="anthropic">Anthropic (Claude)</option>
+            <option value="openrouter">OpenRouter</option>
+            <option value="gemini">Google Gemini</option>
+            <option value="openai">OpenAI (direct)</option>
+          </select>
+          <p id="provider-note" class="note"></p>
+
+          <label for="api-key">API key</label>
+          <input
+            type="password"
+            id="api-key"
+            placeholder="Paste your API key"
+            autocomplete="off"
+          />
+          <label class="checkbox">
+            <input type="checkbox" id="remember-key" />
+            Remember key in this browser
+          </label>
+
+          <label for="model-input">Model</label>
+          <input type="text" id="model-input" placeholder="Model ID" />
+          <p class="note">Model IDs change often — edit this freely.</p>
+        </section>
+
+        <!-- Capability toggles -->
+        <section class="panel">
+          <h2>Capabilities</h2>
+
+          <label class="checkbox">
+            <input type="checkbox" id="toggle-docs" />
+            Document grounding
+          </label>
+
+          <!-- Upload area, shown only when document grounding is on -->
+          <div id="docs-area" class="subpanel" hidden>
+            <input type="file" id="doc-file" multiple
+                   accept=".txt,.md,.csv,.json,.pdf" />
+            <div id="doc-list" class="doc-list"></div>
+          </div>
+
+          <label class="checkbox">
+            <input type="checkbox" id="toggle-websearch" />
+            Web search
+          </label>
+          <p id="websearch-note" class="note"></p>
+
+          <label class="checkbox">
+            <input type="checkbox" id="toggle-trace" />
+            Learning Trace capture
+          </label>
+
+          <!-- Trace actions, shown only when capture is on -->
+          <div id="trace-area" class="subpanel" hidden>
+            <button id="btn-save-trace" class="btn">Save Learning Trace</button>
+            <button id="btn-export-traces" class="btn">Export traces (.md)</button>
+            <p class="note">
+              Saved in this browser only — no central store on a static site.
+            </p>
+          </div>
+        </section>
+
+        <!-- Output / export -->
+        <section class="panel">
+          <h2>Output</h2>
+          <button id="btn-export-output" class="btn">Export latest output (.md)</button>
+          <button id="btn-export-transcript" class="btn">Export transcript (.md)</button>
+          <button id="btn-print" class="btn">Print / Save as PDF</button>
+        </section>
+
+        <!-- Session controls -->
+        <section class="panel">
+          <h2>Session</h2>
+          <button id="btn-new" class="btn">New conversation</button>
+          <button id="btn-clear-key" class="btn">Clear key</button>
+          <button id="btn-clear-all" class="btn btn-danger">Clear all stored data</button>
+        </section>
+
+        <p class="disclaimer">
+          Internal prototype. Your key stays in your browser and is sent only to
+          your chosen provider.
+        </p>
+      </aside>
+
+      <!-- ============================ CHAT PANE ============================ -->
+      <main class="chat">
+        <!-- Step bar: shows the five steps, the current step's caption, and the
+             Back / Next controls that move the conversation between steps. -->
+        <div class="step-bar">
+          <div id="phase-stepper" class="step-stepper"></div>
+          <div class="step-controls">
+            <p id="phase-blurb" class="step-blurb"></p>
+            <div class="step-nav">
+              <button id="btn-phase-back" class="btn btn-step">‹ Back</button>
+              <button id="btn-phase-next" class="btn btn-step">Next step ›</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="messages" class="messages"></div>
+
+        <div id="status" class="status status-info"></div>
+
+        <form id="chat-form" class="composer">
+          <textarea
+            id="chat-input"
+            class="chat-input"
+            rows="2"
+            placeholder="Type your message…  (Enter to send, Shift+Enter for a new line)"
+          ></textarea>
+          <button type="submit" id="send-btn" class="btn btn-send">Send</button>
+        </form>
+      </main>
+    </div>
+
+    <!-- App code (ES modules). app.js imports everything else. -->
+    <script type="module" src="js/app.js"></script>
+  </body>
+</html>
