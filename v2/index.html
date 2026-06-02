@@ -36,6 +36,9 @@
         <div class="sidebar-header">
           <h1 class="wordmark"><em>Scion</em><span class="wm-slash">/</span></h1>
           <p class="tagline">CEI Prototype Design Agent · v2</p>
+          <button id="btn-about" class="link-about" type="button">
+            How it works →
+          </button>
         </div>
 
         <!-- Connection settings -->
@@ -156,6 +159,25 @@
           <button type="submit" id="send-btn" class="btn btn-send">Send</button>
         </form>
       </main>
+    </div>
+
+    <!-- ============================ ABOUT PANEL ============================
+         A modal that explains, in plain language, how Scion works. Its content
+         is loaded at runtime from HOW-IT-WORKS.md (rendered with the same
+         Markdown libraries used for chat), so the panel and the file stay in
+         sync automatically. Hidden until the "How it works" link is clicked. -->
+    <div id="about-overlay" class="modal-overlay" hidden>
+      <div
+        class="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-label="How Scion works"
+      >
+        <button id="btn-about-close" class="modal-close" aria-label="Close">
+          ✕
+        </button>
+        <div id="about-content" class="about-content">Loading…</div>
+      </div>
     </div>
 
     <!-- App code (ES modules). app.js imports everything else. -->

@@ -57,10 +57,19 @@ const el = {
   chatForm: document.getElementById("chat-form"),
   chatInput: document.getElementById("chat-input"),
   sendBtn: document.getElementById("send-btn"),
+
+  // About panel (the "How it works" modal).
+  btnAbout: document.getElementById("btn-about"),
+  aboutOverlay: document.getElementById("about-overlay"),
+  btnAboutClose: document.getElementById("btn-about-close"),
+  aboutContent: document.getElementById("about-content"),
 };
 
 // Guard against double-sends while a response is streaming.
 let isSending = false;
+
+// The About panel loads its text once, the first time it's opened.
+let aboutLoaded = false;
 
 /**
  * Render the conversation, always showing Scion's fixed greeting first followed
@@ -376,6 +385,33 @@ function handleSaveTrace() {
 }
 
 /**
+ * Open the About panel. On first open, fetch HOW-IT-WORKS.md and render it with
+ * the same Markdown libraries used for chat, so the panel always matches the
+ * file. If the fetch fails (e.g. opened from a file:// path), show a hint.
+ */
+async function openAbout() {
+  el.aboutOverlay.hidden = false;
+
+  if (aboutLoaded) return;
+  try {
+    const response = await fetch("HOW-IT-WORKS.md");
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const markdown = await response.text();
+    el.aboutContent.innerHTML = ui.renderMarkdown(markdown);
+    aboutLoaded = true;
+  } catch (error) {
+    el.aboutContent.innerHTML =
+      "<p>Couldn't load the guide. If you opened this page directly from a " +
+      "file, serve the folder over http:// instead.</p>";
+  }
+}
+
+/** Close the About panel. */
+function closeAbout() {
+  el.aboutOverlay.hidden = true;
+}
+
+/**
  * Wire up every event listener once at startup.
  */
 function attachEventListeners() {
@@ -437,6 +473,18 @@ function attachEventListeners() {
   el.btnPhaseBack.addEventListener("click", () => changePhase(-1));
   el.btnPhaseNext.addEventListener("click", () => changePhase(+1));
 
+  // About panel: open via the link, close via the ✕, a click on the dark
+  // backdrop, or the Escape key.
+  el.btnAbout.addEventListener("click", openAbout);
+  el.btnAboutClose.addEventListener("click", closeAbout);
+  el.aboutOverlay.addEventListener("click", (event) => {
+    // Only close when the click is on the overlay itself, not the panel inside.
+    if (event.target === el.aboutOverlay) closeAbout();
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !el.aboutOverlay.hidden) closeAbout();
+  });
+
   // Action buttons.
   el.btnNew.addEventListener("click", () => {
     if (!confirm("Start a new conversation? The current one will be cleared.")) return;
@@ -492,6 +540,9 @@ function init() {
   renderDocList();
   attachEventListeners();
   ui.setStatus("", "info");
+
+  // Allow deep-linking straight to the guide via …/v2/#about.
+  if (location.hash === "#about") openAbout();
 }
 
 // Kick everything off.

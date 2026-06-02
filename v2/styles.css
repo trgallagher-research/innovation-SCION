@@ -116,6 +116,24 @@ body {
   font-size: 11px;
 }
 
+/* "How it works" link under the wordmark. */
+.link-about {
+  margin-top: 12px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 11px;
+  color: var(--ink);
+}
+
+.link-about:hover {
+  color: var(--accent);
+}
+
 .panel {
   border-top: 1px solid var(--line);
   padding: 16px 0;
@@ -599,6 +617,114 @@ body {
   cursor: not-allowed;
 }
 
+/* ============================ ABOUT MODAL ============================ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 6vh 20px;
+  background: rgba(20, 22, 29, 0.55);
+  overflow-y: auto;
+}
+
+/* The [hidden] attribute should fully hide the flex overlay. */
+.modal-overlay[hidden] {
+  display: none;
+}
+
+.modal {
+  position: relative;
+  width: 100%;
+  max-width: 720px;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 44px 48px;
+  box-shadow: 0 24px 60px rgba(20, 22, 29, 0.25);
+}
+
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: #ffffff;
+  color: var(--ink);
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1;
+}
+
+.modal-close:hover {
+  background: var(--ink);
+  color: #ffffff;
+}
+
+/* Editorial prose styling for the About content (rendered from Markdown). */
+.about-content {
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.about-content h1,
+.about-content h2,
+.about-content h3 {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.2;
+}
+.about-content h1 {
+  font-size: 30px;
+  margin: 0 0 6px;
+}
+.about-content h2 {
+  font-size: 20px;
+  margin: 30px 0 8px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+.about-content h3 {
+  font-size: 16px;
+  margin: 18px 0 6px;
+}
+.about-content a {
+  color: var(--accent);
+}
+.about-content code {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  background: #f5f6f8;
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+.about-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0;
+  font-size: 14px;
+}
+.about-content th,
+.about-content td {
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+.about-content th {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 11px;
+  color: var(--accent);
+}
+
 /* ============================ PRINT (Save as PDF) ============================
    When printing, hide everything except the conversation so the exported PDF is
    a clean transcript. */
@@ -606,7 +732,8 @@ body {
   .sidebar,
   .composer,
   .status,
-  .step-bar {
+  .step-bar,
+  .modal-overlay {
     display: none !important;
   }
 

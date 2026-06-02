@@ -21,7 +21,7 @@ const statusEl = document.getElementById("status");
  * @param {string} text - Markdown source.
  * @returns {string} Safe HTML.
  */
-function renderMarkdown(text) {
+export function renderMarkdown(text) {
   if (window.marked && window.DOMPurify) {
     const rawHtml = window.marked.parse(text);
     return window.DOMPurify.sanitize(rawHtml);
